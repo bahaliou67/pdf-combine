@@ -10,7 +10,7 @@ def select_files():
     if files:
         file_list.delete(0, tk.END)  # Vider la liste
         for file in files:
-            file_list.insert(tk.END, file)  # Afficher les fichiers sélectionnés
+            file_list.insert(tk.END, file)  # Ajouter les fichiers sélectionnés
 
 def select_output():
     output = filedialog.asksaveasfilename(
@@ -21,6 +21,30 @@ def select_output():
     if output:
         output_entry.delete(0, tk.END)
         output_entry.insert(0, output)
+
+def move_up():
+    selected = file_list.curselection()
+    if not selected:
+        return
+    index = selected[0]
+    if index == 0:
+        return  # Déjà en haut
+    file = file_list.get(index)
+    file_list.delete(index)
+    file_list.insert(index - 1, file)
+    file_list.select_set(index - 1)
+
+def move_down():
+    selected = file_list.curselection()
+    if not selected:
+        return
+    index = selected[0]
+    if index == file_list.size() - 1:
+        return  # Déjà en bas
+    file = file_list.get(index)
+    file_list.delete(index)
+    file_list.insert(index + 1, file)
+    file_list.select_set(index + 1)
 
 def merge_pdfs():
     files = file_list.get(0, tk.END)
@@ -51,9 +75,19 @@ root.geometry("600x400")
 # Bouton pour sélectionner les fichiers
 tk.Button(root, text="Sélectionner les PDF", command=select_files).pack(pady=10)
 
+# Frame pour la liste et les boutons de réorganisation
+list_frame = tk.Frame(root)
+list_frame.pack(pady=10)
+
 # Liste pour afficher les fichiers sélectionnés
-file_list = tk.Listbox(root, width=80, height=10)
-file_list.pack(pady=10)
+file_list = tk.Listbox(list_frame, width=80, height=10)
+file_list.pack(side=tk.LEFT)
+
+# Frame pour les boutons de réorganisation
+button_frame = tk.Frame(list_frame)
+button_frame.pack(side=tk.RIGHT, padx=5)
+tk.Button(button_frame, text="Monter", command=move_up).pack(pady=5)
+tk.Button(button_frame, text="Descendre", command=move_down).pack(pady=5)
 
 # Entrée pour le fichier de sortie
 tk.Label(root, text="Fichier de sortie :").pack()

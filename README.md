@@ -13,6 +13,7 @@ Download the executable file from the [releases](https://github.com/bahaliou67/p
 
 ### Build executable
 ```bash
+pip install pyinstaller
 pyinstaller --onefile --windowed main.py
 ```
 
